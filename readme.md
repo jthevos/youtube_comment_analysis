@@ -33,3 +33,26 @@ If time permits:
 2. activate this venv.
 3. `pip install -r requirements.txt`
 4. More when I get to this. There are no plans for a UI at this time. 
+
+
+### Sources
+E. Poché, N. Jha, G. Williams, J. Staten, M. Vesper and A. Mahmoud, "Analyzing User Comments on YouTube Coding Tutorial Videos," 2017 IEEE/ACM 25th International Conference on Program Comprehension (ICPC), 2017, pp. 196-206, doi: 10.1109/ICPC.2017.26.
+
+This paper uses Naive Bayes and Support Vector Machines. I think XGBoost or an RNN would be better. Data science uniquely relies on the input data for successful results. Will comments even help with this? 
+
+H. Bhuiyan, J. Ara, R. Bardhan and M. R. Islam, "Retrieving YouTube video by sentiment analysis on user comment," 2017 IEEE International Conference on Signal and Image Processing Applications (ICSIPA), 2017, pp. 474-478, doi: 10.1109/ICSIPA.2017.8120658.
+
+This source presents a compelling NLP approach, but a video being positively received does not necessarily correlate to its utility as a tutorial - especially after a certain time frame. 
+
+Luo, T., Freeman, C. & Stefaniak, J. “Like, comment, and share”—professional development through social media in higher education: A systematic review. Education Tech Research Dev 68, 1659–1683 (2020). https://doi.org/10.1007/s11423-020-09790-5
+
+This paper focuses on the professional value of social media. 
+
+Obadimu, A., Mead, E., Hussain, M.N., Agarwal, N. (2019). Identifying Toxicity Within YouTube Video Comment. In: Thomson, R., Bisgin, H., Dancy, C., Hyder, A. (eds) Social, Cultural, and Behavioral Modeling. SBP-BRiMS 2019. Lecture Notes in Computer Science(), vol 11549. Springer, Cham. https://doi.org/10.1007/978-3-030-21741-9_22
+https://link.springer.com/chapter/10.1007/978-3-030-21741-9_22#citeas
+
+This paper looks at toxic comments.
+
+Stefan Siersdorfer, Sergiu Chelaru, Wolfgang Nejdl, and Jose San Pedro. 2010. How useful are your comments? analyzing and predicting youtube comments and comment ratings. In Proceedings of the 19th international conference on World wide web (WWW '10). Association for Computing Machinery, New York, NY, USA, 891–900. https://doi.org/10.1145/1772690.1772781
+
+This paper looks at analysis of comment utility. 
