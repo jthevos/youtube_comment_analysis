@@ -1,3 +1,5 @@
 _notes.md
 *.pyc
 .env
+test.json
+.vscode
