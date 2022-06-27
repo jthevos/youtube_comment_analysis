@@ -14,20 +14,22 @@ class CommentCategory(Enum):
 class VideoCategory(Enum):
     PYTHON = 0
     XGBOOST = 1
-    
-    
+
+
 @dataclass
 class VideoData:
     """For videos, catagory will be either 'xgboost' or 'python'"""
+
     id: str
     title: str
     published_at_dt: datetime
     category: str
-    
-    
+
+
 @dataclass
 class CommentData:
     """For comments, category will be one of the enumerated types."""
+
     id: str
     text: str
     published_at_dt: datetime

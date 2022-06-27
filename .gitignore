@@ -3,3 +3,4 @@ _notes.md
 .env
 test.json
 .vscode
+/__pycache__/
