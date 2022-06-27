@@ -1,0 +1,431 @@
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |NOTE: You can support StatQuest by purchasing the Jupyter Notebook and Python code seen in this video here: https://statquest.gumroad.com/l/uroxo
+
+Support StatQuest by buying The StatQuest Illustrated Guide to Machine Learning!!!
+PDF - https://statquest.gumroad.com/l/wvtmc
+Paperback - https://www.amazon.com/dp/B09ZCKR4H6
+Kindle eBook - https://www.amazon.com/dp/B09ZG79HXC| 2020-08-01T18:13:24Z 2022-05-08T11:03:55Z 32
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |I get an error at the following line:
+plot_confusion_matrix(clf_xgb,
+                      X_test,
+                      y_test,
+                      values_format='d',
+                      display_labels=["Did not leave", "Left"])
+ Looks like plot_confusion_matrix is deprecated? 
+
+The error is here:
+---------------------------------------------------------------------------
+XGBoostError                              Traceback (most recent call last)
+/var/folders/cm/vqsqnkqn19x8nz5_d5912hhrzh0cg1/T/ipykernel_37155/2937921683.py in <module>
+----> 1 plot_confusion_matrix(clf_xgb,
+      2                       X_test,
+      3                       y_test,
+      4                       values_format='d',
+      5                       display_labels=["Did not leave", "Left"])
+
+~/opt/anaconda3/lib/python3.9/site-packages/sklearn/utils/validation.py in inner_f(*args, **kwargs)
+     61             extra_args = len(args) - len(all_args)
+     62             if extra_args <= 0:
+---> 63                 return f(*args, **kwargs)
+     64 
+     65             # extra_args > 0
+
+~/opt/anaconda3/lib/python3.9/site-packages/sklearn/metrics/_plot/confusion_matrix.py in plot_confusion_matrix(estimator, X, y_true, labels, sample_weight, normalize, display_labels, include_values, xticks_rotation, values_format, cmap, ax, colorbar)
+    261         raise ValueError("plot_confusion_matrix only supports classifiers")
+    262 
+--> 263     y_pred = estimator.predict(X)
+    264     cm = confusion_matrix(y_true, y_pred, sample_weight=sample_weight,
+    265                           labels=labels, normalize=normalize)
+
+~/opt/anaconda3/lib/python3.9/site-packages/xgboost/sklearn.py in predict(self, X, output_margin, ntree_limit, validate_features, base_margin, iteration_range)
+   1282         iteration_range: Optional[Tuple[int, int]] = None,
+   1283     ) -> np.ndarray:
+-> 1284         class_probs = super().predict(
+   1285             X=X,
+   1286             output_margin=output_margin,
+
+~/opt/anaconda3/lib/python3.9/site-packages/xgboost/sklearn.py in predict(self, X, output_margin, ntree_limit, validate_features, base_margin, iteration_range)
+    879         if self._can_use_inplace_predict():
+    880             try:
+--> 881                 predts = self.get_booster().inplace_predict(
+    882                     data=X,
+    883                     iteration_range=iteration_range,
+
+~/opt/anaconda3/lib/python3.9/site-packages/xgboost/core.py in inplace_predict(self, data, iteration_range, predict_type, missing, validate_features, base_margin, strict_shape)
+   2032             from .data import _ensure_np_dtype
+   2033             data, _ = _ensure_np_dtype(data, data.dtype)
+-> 2034             _check_call(
+   2035                 _LIB.XGBoosterPredictFromDense(
+   2036                     self.handle,
+
+~/opt/anaconda3/lib/python3.9/site-packages/xgboost/core.py in _check_call(ret)
+    216     """
+    217     if ret != 0:
+--> 218         raise XGBoostError(py_str(_LIB.XGBGetLastError()))
+    219 
+    220 
+
+XGBoostError: [17:07:24] ../src/c_api/c_api_utils.h:161: Invalid missing value: null
+Stack trace:
+  [bt] (0) 1   libxgboost.dylib                    0x00000001222a1a54 dmlc::LogMessageFatal::~LogMessageFatal() + 116
+  [bt] (1) 2   libxgboost.dylib                    0x000000012229b28e xgboost::GetMissing(xgboost::Json const&) + 286
+  [bt] (2) 3   libxgboost.dylib                    0x00000001222a9454 void InplacePredictImpl<xgboost::data::ArrayAdapter>(std::__1::shared_ptr<xgboost::data::ArrayAdapter>, std::__1::shared_ptr<xgboost::DMatrix>, char const*, xgboost::Learner*, unsigned long, unsigned long, unsigned long long const**, unsigned long long*, float const**) + 516
+  [bt] (3) 4   libxgboost.dylib                    0x00000001222a8f28 XGBoosterPredictFromDense + 344
+  [bt] (4) 5   libffi.7.dylib                      0x000000010d9bcead ffi_call_unix64 + 85| 2022-06-17T21:23:46Z 2022-06-17T21:23:46Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Hi Josh, for the numerical variable do you still code missing data as 0? if so, this 0 could be misleading to a real zero, right?| 2022-06-02T19:23:08Z 2022-06-02T19:23:08Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Thank you for this great tutorial Josh! Your videos have immensely helped in understanding some of the complex topics. One thing I noticed while watching this tutorial is the handling of categorical features. I think the explanation you gave for "Why not to use LabelEncoding?" is applicable for models like Linear Regression, SVM, NN but not for Trees because they only focus on the order of the feature values. For example, in a set of [1,2,3,4], threshold < 1.5 would be equivalent to threshold == 1. Please let me know if my thought process in wrong.| 2022-05-27T20:47:30Z 2022-05-27T20:47:30Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Hi, I'm just playing with the code and I get an error in the 'Build a preliminary XGBoost Model' section. The ValueError: 2 different 'eval_metric' are provided. Use the one in constructor or 'set_params' instead. Can you advise on how to fix this please as I'm a noob :D| 2022-05-27T10:23:07Z 2022-05-27T10:23:25Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Thank you for the great work!| 2022-05-27T02:41:16Z 2022-05-27T02:41:16Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Thank you for this XGBoost tutorial video. It makes people like me so easy to follow. In this tutorial, you printed gain, cover, total_gain and total_cover at https://youtu.be/GrJP9FLV3FE?t=3231. It reminds me that you showed us how to calculate gain at https://youtu.be/8b1JEDvenQU?t=457 and cover at https://youtu.be/8b1JEDvenQU?t=606 in your "XGBoost Part 2 (of 4): Classification" video. Can you explain which of gain, cover, total_gain and total_cover in this tutorial are gain and cover in "XGBoost Part 2 (of 4): Classification" video? I am still a bit confused after reading XGBoost Python API doc.| 2022-05-26T02:19:09Z 2022-05-26T02:19:09Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z Thanks! 2022-05-25T01:16:47Z 2022-05-25T01:16:47Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Can't thank you enough for the clearest and best explanation on YouTube <3| 2022-05-24T14:08:09Z 2022-05-24T14:08:09Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Thank you so much^^| 2022-05-19T09:48:16Z 2022-05-19T09:48:16Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Quick note: At 43:30 instead of using the plot_confusion_matrix() which is now depreciated, you need to use ConfusionMatrixDisplay.from_estimator(). This can be done as follows:
+Include: from sklearn.metrics import ConfusionMatrixDisplay at the start with the other imports. Then when printing the confusion matrix you need to use the line: ConfusionMatrixDisplay.from_estimator(clf_xgb, X_test, y_test, display_labels=["Did not leave", "Left"])| 2022-05-17T14:40:56Z 2022-05-17T14:40:56Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Awesome teaching, thanks for making this video, could you make some kind of special price bundle option in your website if someone is planning to buy all your Study guides at once?| 2022-05-15T00:25:59Z 2022-05-15T00:25:59Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Great video! Can you do a video on EBM (explainable Boosting machines) please?! This would be really helpful - thanks!| 2022-05-12T13:58:01Z 2022-05-12T13:58:01Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |can i use this to predict stock market ? for time series forecasting ?| 2022-05-08T17:52:20Z 2022-05-08T17:52:20Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Thank you for the awesomeness!!| 2022-05-07T11:16:56Z 2022-05-07T11:16:56Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |I have a question about handling the pd.get_dummies(). When it is used for gender, it turns out the ( M or F) to  a  single column of 1 and 0. But if get_dummies is used for a column that has 3 or more unique values, it creates columns equal to number of unique values. Isn't it better to use argument drop_first=True to reduce the redundancy. If not, when do you recommend to use this argument?  BTW, thanks a lot for these great videos! I have learned a lot.| 2022-04-20T05:35:28Z 2022-04-20T05:35:28Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Expected to prune features based on their importance - feature selection!?| 2022-04-12T18:04:26Z 2022-04-12T18:04:26Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |XGBoost works with categorical data as well. Why did you encode those columns??| 2022-04-12T17:36:57Z 2022-04-12T17:36:57Z 0
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |Great one!| 2022-04-11T15:12:29Z 2022-04-11T15:12:29Z 1
+GrJP9FLV3FE |XGBoost in Python from Start to Finish| 2020-08-01T18:13:06Z |I love your teaching style. Extremely helpful for a beginner like me. Really helped me a lot in my exams. No words. You are the best!!!!| 2022-04-06T04:29:15Z 2022-04-06T04:29:15Z 2
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |Corrections:
+16:50 I say "66", but I meant to say "62.48". However, either way, the conclusion is the same.
+22:03 In the original XGBoost documents they use the epsilon symbol to refer to the learning rate, but in the actual implementation, this is controlled via the "eta" parameter. So, I guess to be consistent with the original documentation, I made the same mistake! :)
+
+Support StatQuest by buying The StatQuest Illustrated Guide to Machine Learning!!!
+PDF - https://statquest.gumroad.com/l/wvtmc
+Paperback - https://www.amazon.com/dp/B09ZCKR4H6
+Kindle eBook - https://www.amazon.com/dp/B09ZG79HXC| 2020-01-14T11:45:39Z 2022-05-11T19:01:07Z 28
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |Nowadays I write a "bam note" for important notes for algorithms.| 2022-06-23T11:15:48Z 2022-06-23T11:15:48Z 1
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |당신이 우리 교수보다 낫다... 최고!| 2022-06-11T19:48:45Z 2022-06-11T19:48:45Z 1
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |Hey Josh, I really love your contents, you are the one who really explains the model details.| 2022-06-06T17:09:12Z 2022-06-06T17:11:13Z 1
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |1. Higher similarity score = Better?
+2. How do you determine what gamma is? You just randomly pick it?| 2022-06-02T22:28:06Z 2022-06-02T22:28:06Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |From BAM to DANG !| 2022-06-01T11:11:51Z 2022-06-01T11:11:51Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |why the initial prediction is set as 0.5? is that average of dosage?| 2022-05-30T17:47:39Z 2022-05-30T17:47:39Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |you are my savior. Does the 'gamma' and 'lambda' in this video work the same role as the parameters provided by XGBoost?| 2022-05-30T09:05:27Z 2022-05-30T09:05:27Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z 謝謝！ 2022-05-27T22:12:03Z 2022-05-27T22:12:03Z 1
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z Hooray! 2022-05-23T14:07:47Z 2022-05-23T14:08:24Z 2
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |20:31  you say " in other words when lambda >0 then it will reduce the amount that this individual observation adds to the overall prediction" , would you please explain this? I'm just wondering what the overall prediction is because you explained it later in the video?
+do you mean by overall prediction this one: 0.5+(0.3 x -10.5) ?| 2022-05-23T12:55:00Z 2022-05-23T13:20:00Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z Awesome!! 2022-05-17T03:57:51Z 2022-05-17T03:57:51Z 1
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |This channel is sooo cool!! 🚀🚀🚀🔥❤️🥺| 2022-05-09T20:03:01Z 2022-05-09T20:03:01Z 1
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |Thanks for the awesome content| 2022-05-06T11:42:22Z 2022-05-06T11:42:22Z 1
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |Hi Josh, i recently stumbled up on your videos, which are great! At xgb part 1 I was first confused about the phrase "xgboost builds a unique regression tree". I guess what you wanted to explain is that xgb produces trees which are all independet to eachother right or did i missed something? ^^ all the best| 2022-04-27T15:20:32Z 2022-04-27T15:20:32Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |Could we apply gradient boosted classifier for multiclass classification, if yes then how would we compute the initial guess aka the log odds here ...| 2022-04-25T14:09:35Z 2022-04-25T14:09:35Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |Awesome explanation. Thanks a lot for this. Just one quick question, what if Gain - gamma = 0? Should we prune the branch for this case? Thanks again for these awesome videos. Cheers!| 2022-04-20T17:35:01Z 2022-04-20T17:35:01Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |22:09, the Greek letter e is not eta, it is epsilon.| 2022-04-06T17:00:06Z 2022-04-06T17:00:06Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z |you mean 63 at 16:56, not 66?| 2022-04-06T16:54:19Z 2022-04-06T16:54:19Z 0
+OtD8wVaFm6E |XGBoost Part 1 (of 4): Regression| 2019-12-16T14:00:04Z  2022-03-28T11:37:11Z 2022-03-28T11:37:11Z 1
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Your justification for learning rate is not right.| 2022-05-16T02:09:30Z 2022-05-16T02:09:30Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |How do you do it for Multiclass classification?| 2022-05-02T02:41:45Z 2022-05-02T02:41:45Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |I have a question. What are the two classes here that are being separated.| 2022-04-16T07:21:38Z 2022-04-16T07:21:38Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |where is the data?| 2022-04-15T07:42:53Z 2022-04-15T07:42:53Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Thanks for the video!  Great learning experience.| 2022-03-25T03:10:48Z 2022-03-25T03:10:48Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |I have a question about the Xgboost algorithm. The question is how parallelization works in the Xgboost algorithm and explain me with an example.| 2022-03-11T22:22:54Z 2022-03-11T22:22:54Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Excellent Work . Thank you so much| 2022-03-07T01:42:42Z 2022-03-07T01:42:42Z 1
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |How can parallelization work in the Xgboost algorithm?  Please explain it with an example| 2022-03-06T10:20:50Z 2022-03-06T10:20:50Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |i have a doubt……during cross validation where we choose which model to use i am getting some accuracy but after hyperparameter tuning  the accuracy jumps by 2 % 
+ 
+Is this normal?
+This is in XGboost| 2022-02-09T15:56:13Z 2022-02-09T15:56:33Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |where can i get the api of XGboost?| 2022-01-19T06:16:09Z 2022-01-19T06:16:09Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Thank you, this was explained really well. I'm working on a scorecard model with over 400 variables, can we use 'from xgboost import plot_importance' to print out the important features post hyper-parameter tuning and training the model and then re-run the model with subset features?| 2021-11-15T12:52:36Z 2021-11-15T13:16:07Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Hey man, you doin' a good job! Why u stop making videos?| 2021-11-07T14:15:02Z 2021-11-07T14:15:02Z 1
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Exactly what I needed. Explained very clearly. Thank You.| 2021-11-06T00:17:50Z 2021-11-06T00:17:50Z 1
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |all the advanced terms are simply described. Thanks, Harsh.| 2021-10-05T12:43:12Z 2021-10-05T12:43:12Z 1
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Thank you for the great content. 
+I'm wondering why don't you use early_stopping_rounds during grid search? That way you could set num_trees to a fixed big number (like you did later when building the final model) and don't have to grid search over it. Also, using your approach you probably overfit during grid search (due to the high number of estimators) and only get the best parameters when using all of the 1000, 2000 or 3000 trees. 
+In the final model, due to the fact that you use early_stopping_rounds, a different number of estimators will be used and therefore the optimal hyperparamters from the grid search are probably not the optimal hyperparameters for the final model. What do you think about it?| 2021-08-25T15:37:56Z 2021-08-25T15:37:56Z 1
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Good video sir , Thanks for making videos and educating us| 2021-08-18T14:08:31Z 2021-08-18T14:08:31Z 1
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |How does this not have more views!? Excellent video, EXACTLY what I needed to finish my project at work. This video could have saved me 10 hours of head scratching if I had seen it sooner.| 2021-07-09T21:02:37Z 2021-07-09T21:02:37Z 13
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Great content...| 2021-07-03T16:55:18Z 2021-07-03T16:55:18Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |I appreciate your effort.| 2021-07-03T16:40:51Z 2021-07-03T16:40:51Z 0
+ap2SS0-XPcE |XGBoost Model in Python || Tutorial || Machine Learning| 2021-05-17T15:43:40Z |Really, awesome.| 2021-07-03T16:39:03Z 2021-07-03T16:39:03Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |could you kindly provide the link for the full playlist? thx| 2022-06-25T15:41:27Z 2022-06-25T15:41:27Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Great video, but i'd wish you'd bothered to thoroughly explain the hyper parameters.| 2021-12-22T10:28:18Z 2021-12-22T10:28:18Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Awesome explanation!| 2021-12-07T02:37:13Z 2021-12-07T02:37:13Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |this video openned up a recursive dependence that took me to watch 213402 more videos. damn| 2021-11-26T14:14:03Z 2021-11-26T14:14:03Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Character In the video It's great, I like it a lot $$| 2021-11-06T16:03:16Z 2021-11-06T16:03:16Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Thank you for your fabulous video! I enjoy it and understand well!
+
+Could you tell me if the output from the xgb classifier gives 'confidence' in a specific output (allowing you to assign a class) ? or is this functionally equivalent to statistical probability of an event occuring?| 2021-10-16T02:05:09Z 2021-10-16T02:05:09Z 1
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Excellent demonstration, thanks!!!| 2021-09-26T12:44:41Z 2021-09-26T12:44:41Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |thanks a lot, it's perfect: explanation and concept at beginning and then you apply the model| 2021-08-27T14:01:27Z 2021-08-27T14:01:27Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |You have the _perfect_ voice and narration, something which I have missed in every other popular ML video lectures and courses.| 2021-08-20T15:43:16Z 2021-08-20T15:43:47Z 21
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Nice clear video, thanks :)| 2021-07-07T21:26:10Z 2021-07-07T21:26:10Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |I wish you were my teacher when i studied this in school..very clear and concise| 2021-03-25T14:51:02Z 2021-03-25T14:51:02Z 2
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |In other words, its the wet dream of every Data Scientist?| 2021-03-22T15:45:29Z 2021-03-22T15:45:29Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |so how it works?| 2021-03-15T20:31:50Z 2021-03-15T20:31:50Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Why don't you upload the notepad !| 2021-03-11T16:26:45Z 2021-03-11T16:26:45Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Really Nice video, great explanation. thanks!| 2021-02-01T05:10:30Z 2021-02-01T05:10:30Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |by far the best xgboost tutorial i have seen. Well done!| 2021-01-24T00:20:59Z 2021-01-24T00:20:59Z 2
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |This is "How to use it", not "How it works".| 2020-07-23T18:58:47Z 2020-07-23T18:58:47Z 6
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |"it's so easy to use ,it's almost disturbing!", I literally LoL'ed at that! :D| 2020-07-20T04:03:28Z 2020-07-20T04:14:20Z 13
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |Very clear I love this tutorial!| 2020-07-17T08:00:40Z 2020-07-17T08:00:40Z 0
+OQKQHNCVf5k |XGBoost: How it works, with an example.| 2020-02-11T21:07:51Z |not in a critical way, but is this a sales pitch for xgboost? :) hahhaha| 2020-07-07T07:23:08Z 2020-07-07T07:23:08Z 3
+Y7uNT0alrKk |Complete Beginners Guide to XGBoost Models| 2020-08-14T15:46:55Z |Thx a lot.
+Please, could you tell me the difference between softmax and softprop? i read about it but can’t catch idea| 2021-08-30T21:54:06Z 2021-08-30T21:54:06Z 0
+Y7uNT0alrKk |Complete Beginners Guide to XGBoost Models| 2020-08-14T15:46:55Z |This is amazing! Thank you !!
+Can you do a video where you demonstrate XGBoost handling missing data and incremental learning ??| 2021-03-07T17:52:04Z 2021-03-07T17:52:51Z 1
+Y7uNT0alrKk |Complete Beginners Guide to XGBoost Models| 2020-08-14T15:46:55Z |Thank you so much!| 2021-02-17T21:33:42Z 2021-02-17T21:33:42Z 1
+VgDe0gwesrw |Python Tutorial : When should I use XGBoost?| 2020-04-09T02:17:17Z |I have a question about the Xgboost algorithm. The question is how parallelization works in the Xgboost algorithm and explain me with an example.| 2022-03-11T22:26:20Z 2022-03-11T22:26:20Z 0
+VgDe0gwesrw |Python Tutorial : When should I use XGBoost?| 2020-04-09T02:17:17Z |What is meaning by features?| 2021-02-08T15:03:21Z 2021-02-08T15:03:21Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Got a question on the topic? Please share it in the comment section below and our experts will answer it for you. For Edureka Python Machine Learning Course curriculum, Visit our Website: http://bit.ly/2FBUtO7| 2019-06-27T14:21:41Z 2019-06-27T14:21:41Z 1
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Please can you give datasets in description?| 2022-04-27T06:30:16Z 2022-04-27T06:30:16Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Thank you Madam, To the point, explanation.| 2022-04-20T15:06:34Z 2022-04-20T15:06:34Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Thank you..Can I use adaboost or gradient boost regression methods for ptedicting the more than one output variable ? If yes, can you help me out..Thank you| 2022-04-05T06:43:29Z 2022-04-05T06:43:29Z 1
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Really awesome 👌| 2021-11-19T10:23:51Z 2021-11-19T10:23:51Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Thank you for the detailed explanation| 2021-11-06T10:22:24Z 2021-11-06T10:22:24Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Nice explaination.
+Just one doubt : How are Loss-function(in Gboost) and Miss-classification(in Adaboost) different from each other?| 2021-09-15T17:46:43Z 2021-09-15T17:46:43Z 3
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Thank You| 2021-08-25T13:34:43Z 2021-08-25T13:34:43Z 1
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Good graphics and good explanation.  Well done.| 2021-06-19T16:55:54Z 2021-06-19T16:55:54Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |please share the data as well as code| 2021-05-25T11:03:12Z 2021-05-25T11:03:12Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Thank you 
+edureka| 2021-03-12T09:47:47Z 2021-03-12T09:47:47Z 1
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Can we use these boosting techniques along with supervised machine learning algorithms such as svm,NB,| 2020-10-11T15:37:53Z 2020-10-11T15:37:53Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |That was quite informative. Thanks a lot for the help.  :-)| 2020-10-01T03:22:27Z 2020-10-01T03:22:27Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Good overall understanding :)| 2020-09-18T03:58:24Z 2020-09-18T03:58:24Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Found it really useful. Kudos to the instructor who explained it pretty well. Would love to see more math and animation to understand the concept better but whatever is covered was excellent.| 2020-08-13T13:30:20Z 2020-08-13T13:30:20Z 3
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Well explained| 2020-08-03T13:33:32Z 2020-08-03T13:33:32Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Fantastic lecture, thank you!| 2020-06-25T19:40:42Z 2020-06-25T19:40:42Z 1
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Excellent video. Easy to follow along and understand. Thank you.| 2020-06-05T17:36:11Z 2020-06-05T17:36:11Z 0
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |thank you edureka for helping me to increase my accuracy score of my model| 2020-05-13T03:36:48Z 2020-05-13T03:36:48Z 2
+kho6oANGu_A |Boosting Machine Learning Tutorial || Adaptive Boosting, Gradient Boosting, XGBoost || Edureka| 2019-06-27T14:19:35Z |Ultimate crash course....... Whenever I am stuck while making complex models, I refer back to Edureka. These people are awesome! Over the last few years, Edureka has contributed a lot towards my learning! Kudos to Edureka, Kudos to all of the trainers there!| 2020-04-25T06:32:05Z 2020-04-25T06:32:05Z 0
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |One of the best contents on the XGBoot subject. SIMPLE yet DEEP into details.| 2022-06-21T13:03:41Z 2022-06-21T13:03:41Z 0
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Excellent video! loved the explanation| 2022-04-24T20:53:04Z 2022-04-24T20:53:04Z 1
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |you just tell about gradient boosting what about extreme gradient boosting ?
+tittle is incorrect ....| 2022-04-08T15:30:28Z 2022-04-08T15:32:12Z 0
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Thank you, I needed this| 2022-02-24T10:46:38Z 2022-02-24T10:46:38Z 0
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Really excellent explanation!| 2021-12-16T11:56:52Z 2021-12-16T11:56:52Z 1
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |I think it's a tutorial on Gradient Boosting, Please make sure, and will be happy if you prove me wrong.| 2021-11-26T14:57:03Z 2021-11-26T14:57:03Z 1
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Thanks much!!!  Excellent explanation| 2021-11-25T23:18:04Z 2021-11-25T23:18:04Z 1
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Very nice. I was quite confused in the beginning but the practical example help a lot to understand what is happening in this method.| 2021-09-08T14:19:34Z 2021-09-08T14:19:34Z 1
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Dr. Ryan. How can I cite you? I am writing a report and would like to cite your teachings.| 2021-09-07T09:08:23Z 2021-09-07T09:08:23Z 0
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |A novel xg boost tuned machine learning model for software bug prediction 
+We need a video regarding this exactly what I request 
+Plz make a video like that asap| 2021-06-10T15:52:15Z 2021-06-10T15:52:15Z 0
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |where can i find the full course?| 2021-04-23T16:10:57Z 2021-04-23T16:10:57Z 3
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Your effort is great I really appreciate your efforts to make the things easy at a root level in this video. I would like to request to prepare one video like the same root level to make the idea of XGboost as easy as possible. How the Dmatrix, gamma and lambda parameters works to achieve the best model performance?| 2021-03-24T23:30:42Z 2021-03-24T23:30:42Z 0
+PxgVFp5a0E4 |XGBoost Made Easy || Extreme Gradient Boosting || AWS SageMaker| 2021-02-28T18:15:08Z |Thanks to Stemplicity, you make this profound algorithm easy to understand.| 2021-03-06T04:24:58Z 2021-03-06T04:24:58Z 3
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |We are near 250k. Please do subscribe my channel and share with all your friends. :)| 2020-10-12T16:04:13Z 2020-10-12T16:04:13Z 60
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Statquest Light !!!!
+Fantastic effort though.| 2022-06-26T14:38:22Z 2022-06-26T14:38:22Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Please put lgbm mathematical explanation sir| 2022-05-30T03:16:16Z 2022-05-30T03:16:16Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |You are legend sir.| 2022-05-23T02:07:01Z 2022-05-23T02:07:01Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Hi, thank you very much for this explanation! Great video! But I have one question. In 19:39 you first wrote 0 which is the probability of first row then you added learning rate*similarity weight. My question is instead of 0 shouldn't we write 0.5 which is the average probability of first (base model). 0.5+learning rate*similarity. Please correct me if I am wrong.| 2022-04-19T10:45:52Z 2022-04-19T10:45:52Z 1
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Hi @krish 
+First of all kudos to you Great video
+Can you tell me how xgboost is different from Aprori alogrithm or does it cover every combination as in Aprori cover ( ie it's covers all the combination while creating tree as Aprori will cover for same problem statement)
+
+Thanks and love your work
+Keep rocking| 2022-04-10T12:56:53Z 2022-04-10T12:56:53Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Wht is the role of lambda in the similarity weight here.| 2022-03-24T06:30:10Z 2022-03-24T06:30:10Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |You did not explain the Cover value concept in detail!| 2022-03-15T03:13:49Z 2022-03-15T03:13:49Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |This is pure gold! Thanks for the tutorial!| 2022-01-26T05:35:24Z 2022-01-26T05:35:24Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |0-0.6 = -0.6, not 0.4| 2022-01-20T19:11:35Z 2022-01-20T19:11:35Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Information gain, It's 0.19 instead of 0.21| 2022-01-20T18:58:38Z 2022-01-20T18:58:38Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z .33-.14=.19 2021-12-25T17:23:50Z 2021-12-25T17:23:50Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |This video is "pretty much important!"| 2021-12-09T19:06:43Z 2021-12-09T19:07:09Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |its tough to understand in first attempt ,but thanks for giving the outline so clearly, I will watch it untill I understand I implement it from scratch .| 2021-11-19T22:01:14Z 2021-11-19T22:01:14Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Krish, I have a question:
+when you compute the output value you are catching the similarity weighted. I think it is incorrect for classification, isn't it? 
+To compute the output you shouldn't square the residuals. 
+THANKS for the video!!| 2021-10-26T21:57:08Z 2021-10-26T21:57:08Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Thank you for your fabulous video! I enjoy it and understand well!
+
+Could you tell me if the output from the xgb classifier gives 'confidence' in a specific output (allowing you to assign a class) ? or is this functionally equivalent to statistical probability of an event occuring?| 2021-10-16T02:08:29Z 2021-10-16T02:08:29Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |What's is the use ?| 2021-10-09T11:20:22Z 2021-10-09T11:20:22Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Grt teacher. Just a doubt, can't we take the credit as first node?| 2021-08-31T19:10:33Z 2021-08-31T19:10:33Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |isnt .33 -.14 = .19 ? am I missing something here?| 2021-07-25T11:19:22Z 2021-07-25T11:19:22Z 0
+gPciUPwWJQQ |Xgboost Classification Indepth Maths Intuition- Machine Learning Algorithms🔥🔥🔥🔥| 2020-10-12T16:01:17Z |Lambda value not calculate why?| 2021-07-10T08:21:59Z 2021-07-10T08:21:59Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z nice 2022-06-19T05:39:19Z 2022-06-19T05:39:19Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |the data was too easy for the model| 2022-06-11T19:06:54Z 2022-06-11T19:06:54Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |If your train accuracy is 1 and test accuracy is 0.97 how can you say that the model is overfitted ?  The model is clearly performing very well on the test data. What you can do is perform k-fold cross validation to be more sure that it gives high accuracy on various test sets .... But having high train and test accuracies is not overfitting, it means that the data is relatively simple for the model to learn.| 2022-05-20T07:09:13Z 2022-05-20T07:09:13Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Great explaplnation Sir! How can I provide batches of Images by using data generator for image dataset to Xgb classifier model to fit images and labels ??| 2022-03-28T17:18:48Z 2022-03-28T17:18:48Z 1
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |There is explanation of what they. Hoping you would a video in more detail| 2022-01-31T06:47:54Z 2022-01-31T06:47:54Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Great video. Could you help me fine-tune my model, please? I am getting really low training and testing accuracy?| 2022-01-12T10:57:49Z 2022-01-12T10:57:49Z 1
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Nice one 👍🏼| 2021-11-05T17:19:08Z 2021-11-05T17:19:08Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Such an informative video about the tunning of xgboost hyperparameter. My question is, can we extract mathematical equation for the input and output parameters. For instance, I have successfully applied Xgboost regression to predict y parameter using X1, X2, X3, X4 input parameters, now how can I get the xgboost's predicting equation between those input and output parameters. Please provide the information in this manner| 2021-10-06T16:22:54Z 2021-10-06T16:25:43Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |What is min_child_weight and its significance?| 2021-09-18T06:37:55Z 2021-09-18T06:37:55Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Thank you! Are the parameters for XGBClassifier similar for the XGBRegressor? I can look at the documentations on my own, but it’s late at night for me and I can’t sleep thinking about it but i also don’t want to get sucked back into my project (i fixate XD) and i need to sleep hahah…
+
+Thank you again though! The video really helped me. I’m only 3 months into learning data science with python so it feels good every time i finally piece things together.| 2021-08-21T06:13:03Z 2021-08-21T06:13:03Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |you could have chosen a better dataset| 2021-08-19T05:21:59Z 2021-08-19T05:21:59Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |This is great.| 2021-08-18T15:57:45Z 2021-08-18T15:57:45Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Thank you, Mr. Veda!  This is really helpful.  I have a question: is there an efficient way to tune these parameters automaticall?.| 2021-07-28T00:54:52Z 2021-07-28T00:54:52Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z Thanks 2021-07-01T03:38:47Z 2021-07-01T03:38:47Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Thank you this helped in understanding| 2021-06-29T11:33:33Z 2021-06-29T11:33:33Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z perfect！ 2021-05-30T14:00:07Z 2021-05-30T14:00:07Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Sir this problems also in the gradient boosting? Am i correct?
+
+If it in, we can do as you explained.
+If no, what have we da sir?
+
+Thank you sir, your videos are amazing ❤️| 2021-05-14T13:28:29Z 2021-05-14T13:28:29Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Fruitful and informative training, please share your email, for clarifications on some of the issues| 2021-04-09T08:04:37Z 2021-04-09T08:04:37Z 0
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Sir I want to use sotmax as objective, I have 4 dependent varaibles. How to make xgboost understand that there are 4 such variables? Pls reply.| 2021-04-08T07:06:24Z 2021-04-08T07:06:24Z 1
+AvWfL1Us3Kg |XGBOOST in Python (Hyper parameter tuning)| 2019-12-31T11:55:04Z |Thanks Teacher. Love it explanation <3| 2021-03-25T12:34:20Z 2021-03-25T12:34:20Z 0
+rMeq9khzdvM |Practical Machine learning Tutorial : XGBoost implementation in Python| 2020-12-15T20:28:35Z |Your explanation is simple and clear. Please make more videos in Machine Learning with practical code examples.| 2022-04-28T21:32:49Z 2022-04-28T21:32:49Z 0
+rMeq9khzdvM |Practical Machine learning Tutorial : XGBoost implementation in Python| 2020-12-15T20:28:35Z |hello sir, where can i see the next part of this video, thank you| 2022-04-20T02:33:10Z 2022-04-20T02:33:10Z 1
+87xRqEAx6CY |xgboost tutorial| 2016-02-10T02:40:57Z |This stupid and stupidity and you crazy i dislike| 2018-10-08T19:37:19Z 2018-10-08T19:37:19Z 1
+87xRqEAx6CY |xgboost tutorial| 2016-02-10T02:40:57Z |line three, what kind of type should it be? it's missing, it's out of boundary. Thank you!| 2017-10-12T09:42:27Z 2017-10-12T09:42:27Z 0
+87xRqEAx6CY |xgboost tutorial| 2016-02-10T02:40:57Z |Just an update: replace line 16 with the following one in order to plot the error:
+plot(log(bst.cv$evaluation_log$test_logloss_mean),type = "l")| 2017-08-24T10:17:56Z 2017-08-24T10:22:07Z 2
+87xRqEAx6CY |xgboost tutorial| 2016-02-10T02:40:57Z |So you optimize your rounds by CV and then you do not adjust it? Makes sense! :D| 2016-10-21T12:37:46Z 2016-10-21T12:37:46Z 0
+87xRqEAx6CY |xgboost tutorial| 2016-02-10T02:40:57Z |great post where can we find your code please| 2016-07-17T23:12:12Z 2016-07-17T23:12:12Z 0
+87xRqEAx6CY |xgboost tutorial| 2016-02-10T02:40:57Z |Hello Sachin, your video on xgboost was very helpful. It would be great if you can provide any source or video link where I can learn how to implement xgboost for Regression (not binary) for a dataset with continous numeric variables as well as categorical variables. Also if you could add the .csv files for agaricus.train and agaricus.test at github| 2016-06-20T12:05:10Z 2016-06-20T12:05:10Z 0
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |When you say the second tree is the negative gradient of the loss function w.r.t the previous output, do you mean that the second tree uses the negative gradient in place of the original dataset's response values?| 2022-06-05T23:26:15Z 2022-06-05T23:26:15Z 0
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Great Explaination ! Thanks so much...| 2022-05-31T07:06:13Z 2022-05-31T07:06:13Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Superb video! I would just tone down the music and choose a less upbeat melody (if any at all), as it's too much on par with voice imo| 2022-05-10T04:52:59Z 2022-05-10T04:52:59Z 0
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Hey loved the video. I am currently working with people who are a lot better at machine learning than I am, and we are using this model. I tried to find more information on what hyperparameter tuning is, is that some form of a loss function for a multivarialbe data set?| 2022-02-20T17:28:54Z 2022-02-20T17:28:54Z 2
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |way clearer than statquest| 2022-02-07T01:49:25Z 2022-02-07T01:49:25Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |This is absolutely superb. Brilliant visuals, amazingly clear. Thank you.| 2022-02-01T12:14:49Z 2022-02-01T12:14:49Z 6
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Hi ! In the first step ( 1:37 ) , a single decision tree is fit. How do you do that? Using entropy method in datasets or Gini Impurity method?| 2022-01-04T20:18:31Z 2022-01-04T20:18:31Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Thank you very much along with provided actual code| 2021-11-24T15:24:33Z 2021-11-24T15:24:33Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |super well explained! thanks| 2021-11-18T13:21:05Z 2021-11-18T13:21:05Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Easy explanantions and great illustrations.Loved it| 2021-11-08T19:49:44Z 2021-11-08T19:49:44Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |I subscribed! Great videos! Just wondering why there are still so many dislikes?| 2021-10-23T18:28:01Z 2021-10-23T18:28:01Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |THANK YOU SO MUCH 🤍🤍🤍🤍🤍| 2021-10-09T20:12:38Z 2021-10-09T20:12:38Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Wonderful exposition!| 2021-09-12T03:08:26Z 2021-09-12T03:08:26Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Background music is too loud.| 2021-08-26T05:30:18Z 2021-08-26T05:30:18Z 5
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Greate video! 
+Please lower the music volume next time ^_^| 2021-07-05T16:21:37Z 2021-07-05T16:21:37Z 2
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Specifically for the west coast people: https://youtu.be/TyvYZ26alZs?t=28    
+Sorry, I'm only kidding, great video though, very helpful! Thank you!| 2021-06-29T23:23:25Z 2021-06-29T23:23:25Z 0
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |After I saw video preview picture I said "AAAAAA It is so simple" grate explanation , thank you!| 2021-05-28T22:08:20Z 2021-05-28T22:08:51Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Thank you! That helped me a lot.| 2021-05-04T08:38:15Z 2021-05-04T08:38:15Z 1
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |this was great!| 2021-04-18T09:08:37Z 2021-04-18T09:08:37Z 3
+TyvYZ26alZs |Visual Guide to Gradient Boosted Trees (xgboost)| 2020-10-10T17:07:04Z |Great refreshers for me. I hope more people see this| 2021-03-29T19:45:31Z 2021-03-29T19:45:31Z 3
+0ikyjpaUDFQ |Intro to XGBoost Models (decision-tree-based ensemble ML algorithms)| 2021-08-26T15:30:00Z |You deserve more views and subscribers. This is one of the most precise and well presented explanation on XGBoost. Your voice sounds nice also, so that's a plus.| 2022-06-12T07:04:32Z 2022-06-12T07:04:32Z 0
+0ikyjpaUDFQ |Intro to XGBoost Models (decision-tree-based ensemble ML algorithms)| 2021-08-26T15:30:00Z |I have a question about the Xgboost algorithm. The question is how parallelization works in the Xgboost algorithm and explain me with an example.| 2022-03-11T22:24:02Z 2022-03-11T22:24:02Z 0
+0ikyjpaUDFQ |Intro to XGBoost Models (decision-tree-based ensemble ML algorithms)| 2021-08-26T15:30:00Z |the font is small and you have lots of Left & right margins| 2021-11-08T23:51:39Z 2021-11-08T23:51:39Z 0
+0ikyjpaUDFQ |Intro to XGBoost Models (decision-tree-based ensemble ML algorithms)| 2021-08-26T15:30:00Z |I think that in trying to make this video more accessible to beginners, it ended up being worse for most people. 
+
+Someone that is only beginning won't know a lot of terms you used here and won't learn all these concepts with such short explanations and little visuals. And someone who is more advanced won't learn much because you don't go in depth into the concepts, code or functionality.
+
+I don't think you needed to explain in this video concepts such as cross validation. But some visuals on how XGBoost splits the data, trains different trees, how and what is carried to the next tree, all that would have made this richer.
+
+I know I would find it very interesting if you showed how to code those features like early stopping, tree pruning and incremental training. Are these done automatically? Is there a way to configure any of it? I would have loved to see a showcase of incremental training, seems awesome.
+
+Lastly, this video felt like an add, like I was being sold this lib. Instead of just showing that it got a perfect accuracy on an small artificial dataset, why not compare it to other models. It's not that impressive if there are 10 other models that can also achieve this. And how does it compare in terms of training speed or in more complex real world data? It felt like this is a perfect model with no downsides and I should take your word for it that it can do all these great things and it will always get the best results| 2021-08-29T22:56:58Z 2021-08-29T22:56:58Z 2
+0ikyjpaUDFQ |Intro to XGBoost Models (decision-tree-based ensemble ML algorithms)| 2021-08-26T15:30:00Z |You're in for a hell of a ride if you try to install xgboost without anaconda (on Mac).| 2021-08-28T02:06:26Z 2021-08-28T02:06:26Z 2
+0ikyjpaUDFQ |Intro to XGBoost Models (decision-tree-based ensemble ML algorithms)| 2021-08-26T15:30:00Z |Excellent tutorial. Thank you!| 2021-08-28T00:18:57Z 2021-08-28T00:18:57Z 0
+0ikyjpaUDFQ |Intro to XGBoost Models (decision-tree-based ensemble ML algorithms)| 2021-08-26T15:30:00Z |text is small and blurry at 360P, I've seen clearer presentations at 360P. Seems the trend is to ignore viewer constraints.| 2021-08-27T11:23:43Z 2021-08-27T11:24:52Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Corrections:
+14:24 I meant to say "larger" instead of "lower.
+18:48  In the original XGBoost documents they use the epsilon symbol to refer to the learning rate, but in the actual implementation, this is controlled via the "eta" parameter. So, I guess to be consistent with the original documentation, I made the same mistake! :)
+
+Support StatQuest by buying The StatQuest Illustrated Guide to Machine Learning!!!
+PDF - https://statquest.gumroad.com/l/wvtmc
+Paperback - https://www.amazon.com/dp/B09ZCKR4H6
+Kindle eBook - https://www.amazon.com/dp/B09ZG79HXC| 2020-05-12T12:04:11Z 2022-05-11T19:01:31Z 15
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |All the boosting and bagging algorithms are complicated algorithms. In universities, I have hardly seen any professor who can make these algorithms understand like Joshua does. Hats off man !!| 2022-06-26T11:11:16Z 2022-06-26T11:11:16Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Josh, good morning, let me ask you a question. You said that we can put the initial probability to a value different than 0.5 if, for example, the training dataset is unbalanced. That means that xgboost can deal with unbalanced datasets without the needing to balanced the training dataset before submitting it to the model?| 2022-06-23T11:47:40Z 2022-06-23T11:47:40Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Thank you very much professor! I would love to see your explanations of statistical learning theory covering following topics: concentration inequalities, rademacher complexity and so on| 2022-06-12T09:42:34Z 2022-06-12T09:42:34Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |great but the sound effects are xtreme annoying....| 2022-06-11T08:08:35Z 2022-06-11T08:08:35Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |One like is minimum action for this content.| 2022-06-09T16:54:23Z 2022-06-09T16:54:23Z 1
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z  2022-03-28T11:53:24Z 2022-03-28T11:53:24Z 1
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Ty very much, will buy your song within tomorrow morning from Thailand :)| 2022-03-20T19:59:24Z 2022-03-20T19:59:24Z 1
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Josh, On a scale of 5 you are a level 5 Teacher. I have learned so much from your videos. I owe so much to Andrew Ng and You. I will contribute to Patreon Once I get a Job. Thank you| 2022-03-15T06:26:03Z 2022-03-15T06:27:41Z 3
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |At 21:47 you should have drew a line at 0.65 probability, but you drew at 0.35 and even later in tree diagram there might be a mistake. Am I right?| 2022-03-03T07:46:01Z 2022-03-03T07:49:30Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Hi Josh, thank you for your amazing videos. They are really helping me a lot.
+
+One thing i still don‘t get is how does xgboost predict multiple classes (e.g. „most likely drug to use“ with drugs 1,2 and 3)?
+Does this work like in multinomial logistic regression, where each class is checked against a baseline-class? Or is it something like a random forrest when using xgboost?| 2022-02-25T16:28:25Z 2022-02-25T16:28:25Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Thanks for video. 12:58 So you mean 'cover' is equal to hyperparameter 'min_child_weight' ??| 2022-02-08T05:30:31Z 2022-02-08T05:30:31Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Hello Josh, thank you for your video.
+How would this work with more than one variable? Does each variable end up with only one threshold?
+
+Thank you!| 2022-01-24T02:51:07Z 2022-01-24T02:51:07Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Awsome!!!👍👍👍very very very very good teacher!!!| 2022-01-22T14:33:27Z 2022-01-22T14:33:27Z 1
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |How to choose a root and a leaf if i am using a large dataset?| 2022-01-18T10:47:12Z 2022-01-18T10:47:12Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |14:24 -- shouldn't be higher values for gamma in order to prune? Lower value for gamma hence Gain - gamma is tend to be positive, hence no prune.| 2022-01-12T23:50:46Z 2022-01-12T23:50:46Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |The music is fantastic.| 2021-12-28T19:28:02Z 2021-12-28T19:28:02Z 1
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |Hi Josh,  Why are we taking the last two values at 6:04?| 2021-10-04T05:45:36Z 2021-10-04T05:45:36Z 0
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |which vedio making tool do u use .....its so cool.| 2021-09-30T12:17:39Z 2021-09-30T12:17:39Z 1
+8b1JEDvenQU |XGBoost Part 2 (of 4): Classification| 2020-01-13T12:30:01Z |you are like khaby lame of data science| 2021-09-22T16:58:57Z 2021-09-22T16:58:57Z 1
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |You are a great man ❤️| 2022-02-15T20:04:07Z 2022-02-15T20:04:07Z 0
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |finished watching| 2022-01-16T20:41:35Z 2022-01-16T20:41:35Z 1
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |This video deserves a lot more views than it got!| 2021-10-31T23:25:05Z 2021-10-31T23:25:05Z 0
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |Hi, Could you please teach us how to balance the imbalance data set ??| 2021-08-24T15:42:18Z 2021-08-24T15:42:18Z 1
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |please add subtitles.| 2021-07-27T10:49:28Z 2021-07-27T10:49:28Z 0
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |thankyou sir ji🔥🔥| 2021-07-20T09:05:00Z 2021-07-20T09:05:00Z 1
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |Good day everyone. I have a question. If a person has never done any of these courses before , no experience what so ever is it a good idea to start here.| 2021-07-18T13:20:57Z 2021-07-18T13:20:57Z 0
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |Can we please solve a classification problem using XGboost, where we are dealing with Imbalanced dataset| 2021-07-18T07:49:23Z 2021-07-18T07:49:23Z 2
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |the best video lecture i have ever seen...your every video is awesome..plz keep it up...thanx a lot| 2021-07-17T21:06:31Z 2021-07-17T21:06:31Z 3
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |your content is absolute gold. If possible, It would be great if you could do an EDA on something related to customer retention or finance.| 2021-07-17T17:33:09Z 2021-07-17T17:33:09Z 3
+UEKNMFKxK0M |Gradient Boosting with XGBoost (5/6) || Machine Learning with Python: Zero to GBMs| 2021-07-17T15:30:11Z |Very good explanations ! Learnt about feature engineering. Thanks for coming live with this 😊| 2021-07-17T16:15:02Z 2021-07-17T16:15:02Z 1
+f3ryHJ05h5k 贪心学院xgboost细节讲解录播，目前为止听过最全最细致的讲解 2020-03-30T12:48:03Z 能想出这玩意的人，就智商而言和我不是一个物种 2022-03-27T12:44:28Z 2022-03-27T12:44:28Z 2
+f3ryHJ05h5k 贪心学院xgboost细节讲解录播，目前为止听过最全最细致的讲解 2020-03-30T12:48:03Z 讲得很不错，但是节奏有点慢了。 2022-01-19T14:08:45Z 2022-01-19T14:08:45Z 0
+f3ryHJ05h5k 贪心学院xgboost细节讲解录播，目前为止听过最全最细致的讲解 2020-03-30T12:48:03Z 为啥你这个账号就只放一个视频啊 2021-10-19T05:08:18Z 2021-10-19T05:08:18Z 0
+f3ryHJ05h5k 贪心学院xgboost细节讲解录播，目前为止听过最全最细致的讲解 2020-03-30T12:48:03Z 讲的很详细。不过对于应用来说，还要自己去多看点相关的知识 2021-04-01T02:08:24Z 2021-04-01T02:08:24Z 1
+f3ryHJ05h5k 贪心学院xgboost细节讲解录播，目前为止听过最全最细致的讲解 2020-03-30T12:48:03Z 确实讲的很棒！ 2020-10-13T13:17:16Z 2020-10-13T13:17:16Z 3
+iBSMdFJ6Iqc |XGBOOST Math Explained - Objective function derivation &amp; Tree Growing || Step By Step| 2020-07-21T23:19:00Z |hello love your channel, will watch full your videos.| 2021-12-23T10:05:05Z 2021-12-23T10:05:05Z 1
+iBSMdFJ6Iqc |XGBOOST Math Explained - Objective function derivation &amp; Tree Growing || Step By Step| 2020-07-21T23:19:00Z |Very well explained!! I follow your videos and the explanation is really to the point and very clear!!! Thank u.| 2021-08-02T09:13:18Z 2021-08-02T09:13:18Z 1
+iBSMdFJ6Iqc |XGBOOST Math Explained - Objective function derivation &amp; Tree Growing || Step By Step| 2020-07-21T23:19:00Z |Very well explained.
+Sir I will be very happy if u upload next tutorial of xgboost| 2021-01-24T17:34:41Z 2021-01-24T17:34:41Z 1
+iBSMdFJ6Iqc |XGBOOST Math Explained - Objective function derivation &amp; Tree Growing || Step By Step| 2020-07-21T23:19:00Z |Hi Where XGBoost part 9 can be found ? Thanks| 2020-12-25T12:49:07Z 2020-12-25T12:49:07Z 0
+iBSMdFJ6Iqc |XGBOOST Math Explained - Objective function derivation &amp; Tree Growing || Step By Step| 2020-07-21T23:19:00Z |Great video! 
+request lightGBM| 2020-12-13T04:36:34Z 2020-12-13T04:36:34Z 1
+iBSMdFJ6Iqc |XGBOOST Math Explained - Objective function derivation &amp; Tree Growing || Step By Step| 2020-07-21T23:19:00Z |Such a clear and succint mathematical intuition of XGBoost . Surprised there are not thousands of views/likes for this video.Kudos to you for such a precise and accurate description.I loved it ..thanks so much.| 2020-12-06T06:12:01Z 2020-12-06T06:12:01Z 1
+iBSMdFJ6Iqc |XGBOOST Math Explained - Objective function derivation &amp; Tree Growing || Step By Step| 2020-07-21T23:19:00Z |Could you explain how did you get from small g to Capital G? and h?| 2020-11-07T13:51:01Z 2020-11-07T13:51:01Z 0
+gKyUucJwD8U |XGBoost tutorial in R| 2020-08-16T17:54:08Z |Very good explanation of each step. Simple and clear in your approach.
+Also, SUPER-AWESOME how you integrated SHAP functions... Really cool !!
+Can you also provide another example using linear regression and XGBoost and show how SHAP is used to identify the top features that contribute to the prediction?| 2022-06-16T06:31:28Z 2022-06-16T06:31:28Z 0
+gKyUucJwD8U |XGBoost tutorial in R| 2020-08-16T17:54:08Z |Thankyou very much, Sir!| 2021-05-05T10:47:57Z 2021-05-05T10:47:57Z 0
+gKyUucJwD8U |XGBoost tutorial in R| 2020-08-16T17:54:08Z |I just want to say this was the most clear explanation I’ve ever seen for executing ML. Not to mention, you’ve blown my mind with how you navigate RStudio. Really appreciate your channel!!| 2021-04-20T03:38:05Z 2021-04-20T03:38:05Z 4
+gKyUucJwD8U |XGBoost tutorial in R| 2020-08-16T17:54:08Z |Great explanation, i used your example doing a regression a give me much better results than a neural network.| 2021-04-19T06:10:44Z 2021-04-19T06:10:44Z 0
+gKyUucJwD8U |XGBoost tutorial in R| 2020-08-16T17:54:08Z |great! Diogo i got a message that fastDummy is no longer available, are you fimiliar with an alternative?| 2021-02-21T15:11:52Z 2021-02-21T15:11:52Z 0
+gKyUucJwD8U |XGBoost tutorial in R| 2020-08-16T17:54:08Z |Awesome stuff! Thank you.| 2020-11-03T17:06:32Z 2020-11-03T17:06:32Z 0
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Hi Julia. Great tutorial! I think it's a great time-saving solution for tuning random grid points. It would be awesome if tune_race_anova could work with tune_bayes, in that once random grids are selected from tune_race_anova, it could pass as "initial" into tune_bayes to fine-tune the best. But currently it does not work, as tune_race_anova only finishes one point that fits all folders and tune_bayes needs as least the same number as tuning parameters. Is there an way around? Again, great work! : )| 2021-09-01T05:40:16Z 2021-09-01T05:40:16Z 0
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Thank you very much once more for your videos, Julia. Another question for you: is there a way to have a progress bar or something like that to monitor the tuning process (that may take a long time to run)?| 2021-08-14T15:35:55Z 2021-08-14T15:35:55Z 0
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Your blogs have helped me so much. Tidymodels for life!| 2021-08-13T21:53:45Z 2021-08-13T21:53:45Z 1
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Does anyone else get an error message (unused arguments (bb_rec, xgb_spec)) when running workflow(bb_rec, xgb_spec) ?| 2021-08-13T07:55:14Z 2021-08-13T07:55:14Z 0
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Thanks Julia!  Love the inclusion of a linear model for imputing speed and angle with a linear model!| 2021-08-06T23:09:58Z 2021-08-06T23:09:58Z 2
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Thank you Julia! I was asking me myself what would be the benefit. Can you tell us something about the advantages of tune_sim_anneal() too? And when it is better to fill param grid with a grid and not with an integer?| 2021-07-31T23:35:20Z 2021-07-31T23:35:20Z 0
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Thank you Julia! I have been waiting for this unknowingly for too long. Great pleasure to follow your videos and always very insightful! Congratulations with your new space :)| 2021-07-30T09:48:22Z 2021-07-30T09:48:22Z 3
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Another splendid screencast Julia!| 2021-07-30T07:11:09Z 2021-07-30T07:11:09Z 0
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Cheers Julia, Great video! Have been wondering about xgboost a bit lately -in regards to using tidymodels vs using the underlying xgboost package directly, with xgb.train(). I've heard mention that xgb.train() has an "automatic stop", that limits the number of trees when no more improvement is detected. This seems pretty helpful (and a great processing-time saver) rather then having to pre-specify the number of trees used. But I'm certainly not a pro at xgboost, so was just wondering your opinion. I like that tidymodels can be applied to all models but was just wondering if, in doing so, this comes at a cost (for xgboost tuning, specifically)| 2021-07-30T03:53:11Z 2021-07-30T03:53:11Z 0
+_e0NFIaHY2c |Tune xgboost more efficiently with racing methods| 2021-07-29T23:53:09Z |Impressive! Thanks so much for the educational video - - it makes tidymodels very appealing!| 2021-07-30T00:28:25Z 2021-07-30T00:28:25Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Hello, great tutorial, helped me a lot. I got to the point when I see the error plot and both train and test data have exactly the same lines. One on top of another. Plus when I want to find the minimum iteration for test_mlogloss i am getting this message: 
+[1] iter           train_mlogloss test_mlogloss 
+<0 rows> (or 0-length row.names)
+What can be the reason? :/| 2022-05-12T18:02:24Z 2022-05-12T18:02:24Z 0
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Dear Rai, I hope you doing well. I have 1 question. I am doing a machine learning model using the RandomForest and XGBoost algorithms. My data is a survey of samples derived from a large population. My data has a sampling weight which is the number of individuals in the population each respondent in the sample is representing. How can I apply this sampling weight in my ML model? The data also contains strata and clusters. Do I have to keep the sampling weight, strata, and cluster variables with my features?| 2022-04-03T22:28:29Z 2022-04-03T22:28:29Z 0
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |I watched your lecture on These models but they all are classification models| 2022-03-16T01:25:21Z 2022-03-16T01:25:21Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Hi Rai. Hope everything is going good. I am currently working on an ML algorithm with a continuous outcome variable. I am new to a regression model. I want to develop randomForest and XGBoost regression. Can I ask for any reference video and codes related to a regression algorithm using RnadomForest and XGBoost| 2022-03-16T01:22:53Z 2022-03-16T01:22:53Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |I have seen your lecture on logistic regression and randomForest as well. They are awesome. Do we require cross-validation in these ML methods? I haven't observed any cross-validation step in your lecture on LR, RF, and xgboost.| 2022-03-03T19:54:28Z 2022-03-03T19:54:28Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Hi Rai. Great job. I have one question. How can we construc ROC&ACU for the XGBOOST model| 2022-03-03T18:59:07Z 2022-03-03T18:59:07Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |I have a basic question.  in logistic regression using lm function, we get model with predictors considered in that.  but here, I don't know which are the predictors considered in the bst_model.  could you please guide me to extract those predictors from the bst_model.   Thank you very much| 2022-02-18T11:22:58Z 2022-02-18T11:22:58Z 0
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Thank you for this tutorial. Awesome.  Step by step explanations made things much easier to understand| 2022-02-17T16:22:03Z 2022-02-17T16:22:03Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Is there a video for checking the model using chi-square?| 2021-10-14T17:31:21Z 2021-10-14T17:31:21Z 0
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |That was a very good tutorial! I wonder if and how we could use the cross validation for choosing the eta, gamma, iteration etc parameters. I would be happy to have any suggestions.| 2021-06-25T11:45:54Z 2021-06-25T11:45:54Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Thank you ,Sir, for explaining the model so well. I am doing something similar with my data. How can I show the probabilities of predictors. (similar to the one in decision tree)| 2021-05-12T21:59:42Z 2021-05-12T21:59:42Z 0
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |I am enjoying watching your videos starting from the simplest to more complicated ones! Thank you Dr. Rai for your great explanation. I have one question, though: When you divide the data into train and test data, you are using   data[ind==1, ] and data[ind==2, ]; it is not clear to me how this magically works; however, what I see is data[x, y], where  the only values that y can take  are blank, and integers from 1 to 400, and the only values y can take are blank, and integer values from 1 to 4. Can you explain to me what is going on? Or, is there any thing that I am missing?| 2021-02-11T19:35:25Z 2021-02-11T19:35:25Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |how can i use this for regression? where to make changes? Plz confirm| 2020-10-09T17:15:14Z 2020-10-09T17:15:14Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |If you wanna use the CONFUSION MATRIX FUNCTION here is the code:
+
+p <- predict(bst_model, newdata = test_matrix)
+
+
+pred <- matrix(p, nrow = nc, ncol = length(p)/nc) %>%
+  t() %>%
+  data.frame() %>%
+  mutate(label = test_label, max_prob = max.col(., "last")-1)
+
+CM  =  table(Prediction = pred$max_prob, Actual = pred$label)
+
+library(caret)
+confusionMatrix(CM)| 2020-10-04T16:18:15Z 2020-10-04T16:18:15Z 0
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |hello sir, how to implement stacking ensemble method in r| 2020-09-20T12:22:04Z 2020-09-20T12:22:04Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |Sir, not able to install magrittr, it says some other package needs to be updated and R restarts, it continues for ever, what's the solution for it| 2020-09-12T15:15:28Z 2020-09-12T15:15:28Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |If I construct a model with Rank as numeric the important graph gives it the highest important ????
+While in the case of factorization the Gre and Gpa are shown as important.  
+So the question then is by changing a numeric to factor is its influence/importance diminished  in the model.| 2020-09-03T12:49:43Z 2020-09-03T12:49:43Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |After weeks of searching for videos on using XGB and predicting continuous variable,  I could not find any decent videos... nor were any of them as well explained (and entertaining) as your videos. Please make one for the community? Best wishes from London, UK| 2020-08-27T21:51:51Z 2020-08-27T21:53:37Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |your explanation is awesome !| 2020-08-09T06:11:19Z 2020-08-09T06:11:19Z 1
+woVTNwRrFHE |eXtreme Gradient Boosting XGBoost Algorithm with R - Example in Easy Steps with One-Hot Encoding| 2017-10-29T13:34:53Z |This helped so much on a classification project I am doing. Much thanks!| 2020-07-30T16:47:51Z 2020-07-30T16:47:51Z 1
